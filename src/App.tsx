@@ -6,7 +6,6 @@ import { clearPersistedState, fromImportFile, loadPersistedState, savePersistedS
 import type {
   ClearanceResult,
   ControlAction,
-  EditorMode,
   Obstacle,
   PersistedState,
   Scenario,
@@ -22,7 +21,7 @@ function createDefaultState(): PersistedState {
   const vehicleSpec = getDefaultVehicleSpec();
   const scenario = createScenario("garage-bay");
   return {
-    version: 5,
+    version: 6,
     vehicleSpec,
     scenario,
     currentPose: scenario.vehicleStart,
@@ -74,7 +73,6 @@ export default function App() {
   const [currentPose, setCurrentPose] = useState<VehiclePose>(persisted.currentPose);
   const [history, setHistory] = useState<SimulationStep[]>(persisted.history);
   const [selectedObstacleId, setSelectedObstacleId] = useState<string | null>(null);
-  const [editorMode, setEditorMode] = useState<EditorMode>("obstacle");
   const [importError, setImportError] = useState<string>("");
   const [keyboardHint, setKeyboardHint] = useState<string>("方向键/WASD 可控制车辆");
   const importRef = useRef<HTMLInputElement | null>(null);
@@ -83,7 +81,7 @@ export default function App() {
 
   useEffect(() => {
     savePersistedState({
-      version: 5,
+      version: 6,
       vehicleSpec,
       scenario,
       currentPose,
@@ -234,7 +232,6 @@ export default function App() {
     setCurrentPose(nextState.currentPose);
     setHistory(nextState.history);
     setSelectedObstacleId(null);
-    setEditorMode("obstacle");
     setImportError("");
     setKeyboardHint("已清除缓存并恢复默认场景");
   }
@@ -387,7 +384,7 @@ export default function App() {
         </div>
         <div className="topbar-actions">
           <button className="ghost-button" onClick={() => downloadJson("parking-simulator.json", toExportPayload({
-            version: 5,
+            version: 6,
             vehicleSpec,
             scenario,
             currentPose,
@@ -419,7 +416,6 @@ export default function App() {
                 onChange={(event) => handleTemplateChange(event.target.value as ScenarioTemplateId)}
               >
                 <option value="garage-bay">{scenarioTemplateName("garage-bay")}</option>
-                <option value="narrow-exit">{scenarioTemplateName("narrow-exit")}</option>
               </select>
             </label>
             <div className="grid-fields">
@@ -559,54 +555,39 @@ export default function App() {
 
           <div className="panel-block">
             <div className="block-header">
-              <h2>编辑模式</h2>
-              <span>拖拽画布中的对象</span>
+              <h2>编辑面板</h2>
+              <span>起始车位常驻可调，障碍物点选后微调</span>
             </div>
-            <div className="segmented">
-              <button
-                className={editorMode === "obstacle" ? "active" : ""}
-                onClick={() => setEditorMode("obstacle")}
-              >
-                障碍物
-              </button>
-              <button
-                className={editorMode === "vehicle" ? "active" : ""}
-                onClick={() => setEditorMode("vehicle")}
-              >
-                起始车位
-              </button>
+            <div className="grid-fields">
+              <label className="field">
+                <span>起始 X</span>
+                <input
+                  type="number"
+                  step={0.05}
+                  value={scenario.vehicleStart.x}
+                  onChange={(event) => updateVehicleStart({ x: Number(event.target.value) })}
+                />
+              </label>
+              <label className="field">
+                <span>起始 Y</span>
+                <input
+                  type="number"
+                  step={0.05}
+                  value={scenario.vehicleStart.y}
+                  onChange={(event) => updateVehicleStart({ y: Number(event.target.value) })}
+                />
+              </label>
+              <label className="field">
+                <span>朝向角</span>
+                <input
+                  type="number"
+                  step={1}
+                  value={radToDeg(scenario.vehicleStart.heading)}
+                  onChange={(event) => updateVehicleStart({ heading: degToRad(Number(event.target.value)) })}
+                />
+              </label>
             </div>
-            {editorMode === "vehicle" ? (
-              <div className="grid-fields">
-                <label className="field">
-                  <span>起始 X</span>
-                  <input
-                    type="number"
-                    step={0.05}
-                    value={scenario.vehicleStart.x}
-                    onChange={(event) => updateVehicleStart({ x: Number(event.target.value) })}
-                  />
-                </label>
-                <label className="field">
-                  <span>起始 Y</span>
-                  <input
-                    type="number"
-                    step={0.05}
-                    value={scenario.vehicleStart.y}
-                    onChange={(event) => updateVehicleStart({ y: Number(event.target.value) })}
-                  />
-                </label>
-                <label className="field">
-                  <span>朝向角</span>
-                  <input
-                    type="number"
-                    step={1}
-                    value={radToDeg(scenario.vehicleStart.heading)}
-                    onChange={(event) => updateVehicleStart({ heading: degToRad(Number(event.target.value)) })}
-                  />
-                </label>
-              </div>
-            ) : selectedObstacle ? (
+            {selectedObstacle ? (
               <div className="grid-fields">
                 <label className="field">
                   <span>{selectedObstacle.name} X</span>
@@ -688,7 +669,6 @@ export default function App() {
             pose={currentPose}
             history={history}
             selectedObstacleId={selectedObstacleId}
-            editorMode={editorMode}
             activeClearancePoints={highlightedClearances}
             onObstacleSelect={setSelectedObstacleId}
             onScenarioChange={applyScenario}

@@ -37,7 +37,7 @@ describe("simulation core", () => {
 
   test("simulate step returns a populated history sample list", () => {
     const spec = getDefaultVehicleSpec();
-    const scenario = createScenario("narrow-exit");
+    const scenario = createScenario("garage-bay");
     const step = simulateStep("forward", scenario.vehicleStart, spec, scenario);
     expect(step.samples.length).toBeGreaterThan(0);
   });

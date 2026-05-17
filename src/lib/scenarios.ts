@@ -71,48 +71,7 @@ const defaultLayoutByTemplate: Record<ScenarioTemplateId, ScenarioLayout> = {
     columnSize: 0.45,
     columnOffset: 0.35,
   },
-  "narrow-exit": {
-    slotWidth: 2.6,
-    slotDepth: 5.1,
-    laneWidth: 4.9,
-    wallThickness: 0.25,
-    columnSize: 0.45,
-    columnOffset: 0.25,
-  },
 };
-
-function createParkingBox(layout: ScenarioLayout, originX: number, originY: number): ParkingLine[] {
-  const lines: ParkingLine[] = [
-    {
-      id: "slot-left",
-      name: "左侧车位线",
-      x1: originX,
-      y1: originY,
-      x2: originX,
-      y2: originY + layout.slotDepth,
-      style: "slot",
-    },
-    {
-      id: "slot-right",
-      name: "右侧车位线",
-      x1: originX + layout.slotWidth,
-      y1: originY,
-      x2: originX + layout.slotWidth,
-      y2: originY + layout.slotDepth,
-      style: "slot",
-    },
-    {
-      id: "slot-back",
-      name: "车位后边线",
-      x1: originX,
-      y1: originY + layout.slotDepth,
-      x2: originX + layout.slotWidth,
-      y2: originY + layout.slotDepth,
-      style: "slot",
-    },
-  ];
-  return lines;
-}
 
 function garageBayScenario(layout: ScenarioLayout): Scenario {
   const moduleCount = 3;
@@ -403,105 +362,8 @@ function garageBayScenario(layout: ScenarioLayout): Scenario {
   };
 }
 
-function narrowExitScenario(layout: ScenarioLayout): Scenario {
-  const bounds = {
-    minX: -2.5,
-    maxX: layout.slotWidth + 4.8,
-    minY: -1.2,
-    maxY: layout.slotDepth + layout.laneWidth + 1.4,
-  };
-  const originX = 0;
-  const originY = 0.2;
-  const parkingLines = createParkingBox(layout, originX, originY);
-  const corridorHeight = layout.slotDepth + layout.laneWidth;
-  const wallY = layout.slotDepth + layout.laneWidth * 0.48;
-  const obstacles: Obstacle[] = [
-    {
-      id: "left-corridor-wall",
-      name: "左侧通道墙",
-      kind: "rect",
-      x: -0.8,
-      y: corridorHeight / 2,
-      width: 0.25,
-      height: corridorHeight,
-      rotation: 0,
-      role: "wall",
-      collidable: true,
-    },
-    {
-      id: "top-corner-wall",
-      name: "前方墙角",
-      kind: "rect",
-      x: layout.slotWidth + 1.35,
-      y: wallY,
-      width: 2.7,
-      height: 0.25,
-      rotation: 0,
-      role: "wall",
-      collidable: true,
-    },
-    {
-      id: "right-corner-pillar",
-      name: "右前柱",
-      kind: "rect",
-      x: layout.slotWidth + 0.3,
-      y: wallY - layout.columnOffset,
-      width: layout.columnSize,
-      height: layout.columnSize,
-      rotation: 0,
-      role: "pillar",
-      collidable: true,
-    },
-    {
-      id: "rear-left-pillar",
-      name: "左后柱",
-      kind: "rect",
-      x: layout.columnOffset,
-      y: originY + layout.slotDepth - layout.columnOffset,
-      width: layout.columnSize,
-      height: layout.columnSize,
-      rotation: 0,
-      role: "pillar",
-      collidable: true,
-    },
-  ];
-  const arrows: GroundArrow[] = [
-    {
-      id: "exit-arrow",
-      name: "出库箭头",
-      x: -1.3,
-      y: layout.slotDepth + layout.laneWidth * 0.28,
-      length: 1.5,
-      width: 0.58,
-      rotation: degToRad(90),
-      color: "rgba(255,255,255,0.86)",
-    },
-  ];
-  const vehicleStart: VehiclePose = {
-    x: layout.slotWidth / 2,
-    y: originY + layout.slotDepth * 0.56,
-    heading: degToRad(-90),
-    steeringDeg: 0,
-  };
-
-  return {
-    id: "narrow-exit",
-    name: "狭窄车库出库",
-    templateId: "narrow-exit",
-    bounds,
-    layout,
-    obstacles,
-    parkingLines,
-    arrows,
-    vehicleStart,
-  };
-}
-
 export function createScenario(templateId: ScenarioTemplateId, layout?: Partial<ScenarioLayout>): Scenario {
   const mergedLayout = { ...defaultLayoutByTemplate[templateId], ...layout };
-  if (templateId === "narrow-exit") {
-    return narrowExitScenario(mergedLayout);
-  }
   return garageBayScenario(mergedLayout);
 }
 
@@ -509,6 +371,6 @@ export function getDefaultVehicleSpec(): VehicleSpec {
   return { ...vehiclePresets[1].spec };
 }
 
-export function scenarioTemplateName(templateId: ScenarioTemplateId): string {
-  return templateId === "garage-bay" ? "单车位倒车入库" : "狭窄车库出库";
+export function scenarioTemplateName(_templateId: ScenarioTemplateId): string {
+  return "单车位倒车入库";
 }

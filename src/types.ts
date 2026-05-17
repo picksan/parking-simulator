@@ -1,4 +1,4 @@
-export type ScenarioTemplateId = "garage-bay" | "narrow-exit";
+export type ScenarioTemplateId = "garage-bay";
 
 export interface VehicleSpec {
   id: string;
@@ -139,5 +139,3 @@ export interface VehiclePreset {
   name: string;
   spec: VehicleSpec;
 }
-
-export type EditorMode = "obstacle" | "vehicle";

@@ -2,7 +2,7 @@ import { createScenario, getDefaultVehicleSpec } from "./scenarios";
 import type { PersistedState, ScenarioTemplateId, VehicleSpec } from "../types";
 
 const STORAGE_KEY = "parking-simulator-state-v1";
-const STORAGE_VERSION = 5;
+const STORAGE_VERSION = 6;
 const POSE_EPSILON = 1e-6;
 
 function coerceVehicleSpec(input: unknown): VehicleSpec {

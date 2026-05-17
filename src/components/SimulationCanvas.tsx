@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { EditorMode, GroundArrow, Obstacle, Point, Scenario, SimulationStep, VehiclePose, VehicleSpec } from "../types";
+import type { GroundArrow, Obstacle, Point, Scenario, SimulationStep, VehiclePose, VehicleSpec } from "../types";
 import {
   carPolygon,
   degToRad,
@@ -17,7 +17,6 @@ interface SimulationCanvasProps {
   pose: VehiclePose;
   history: SimulationStep[];
   selectedObstacleId: string | null;
-  editorMode: EditorMode;
   activeClearancePoints?: Array<{ carPoint?: Point; obstaclePoint?: Point; collided?: boolean }>;
   onObstacleSelect: (obstacleId: string | null) => void;
   onScenarioChange: (scenario: Scenario) => void;
@@ -265,7 +264,6 @@ export function SimulationCanvas({
   pose,
   history,
   selectedObstacleId,
-  editorMode,
   activeClearancePoints,
   onObstacleSelect,
   onScenarioChange,
@@ -510,7 +508,7 @@ export function SimulationCanvas({
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    const editablePose = editorMode === "vehicle" ? scenario.vehicleStart : pose;
+    const editablePose = pose;
     const rotationAnchor = worldToCanvas(vehicleFrontCenter(spec, editablePose), view);
     const rotationHandle = worldToCanvas(vehicleRotationHandlePoint(spec, editablePose), view);
     ctx.beginPath();
@@ -614,12 +612,12 @@ export function SimulationCanvas({
     const view = transform ?? getTransform(canvas, scenario);
     const worldPoint = canvasToWorld(localPoint, view);
 
-    const editablePose = editorMode === "vehicle" ? scenario.vehicleStart : pose;
+    const editablePose = pose;
     const rotationHandlePoint = vehicleRotationHandlePoint(spec, editablePose);
     if (distance(worldPoint, rotationHandlePoint) <= 0.55) {
       setDragState({
         kind: "vehicle-rotate",
-        poseTarget: editorMode === "vehicle" ? "start" : "current",
+        poseTarget: "current",
         offsetX: 0,
         offsetY: 0,
         headingOffset: normalizeAngle(
@@ -637,20 +635,6 @@ export function SimulationCanvas({
         offsetX: worldPoint.x - pose.x,
         offsetY: worldPoint.y - pose.y,
       });
-      onObstacleSelect(null);
-      return;
-    }
-
-    if (editorMode === "vehicle") {
-      const start = scenario.vehicleStart;
-      if (pointHitsVehicle(worldPoint, spec, start)) {
-        setDragState({
-          kind: "vehicle-move",
-          poseTarget: "start",
-          offsetX: worldPoint.x - start.x,
-          offsetY: worldPoint.y - start.y,
-        });
-      }
       onObstacleSelect(null);
       return;
     }
@@ -714,7 +698,7 @@ export function SimulationCanvas({
     <div className="canvas-shell">
       <div className="canvas-toolbar">
         <span>画布坐标单位：米</span>
-        <span>{editorMode === "vehicle" ? "当前模式：拖拽起始车位" : "当前模式：拖拽障碍物"}</span>
+        <span>当前模式：拖拽车辆与障碍物</span>
         <span>橙红箭头是车头，蓝色短条是车尾</span>
         <span>深蓝前轮会跟随方向角转动</span>
         <span>彩色圆点标出车辆左右 A/B/C 柱</span>
