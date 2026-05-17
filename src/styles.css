@@ -1,0 +1,356 @@
+:root {
+  color: #102029;
+  background:
+    radial-gradient(circle at top left, rgba(199, 227, 214, 0.82), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(232, 211, 180, 0.78), transparent 32%),
+    linear-gradient(135deg, #e7ece8 0%, #f5f1e7 52%, #e5edf0 100%);
+  font-family: "Avenir Next", "Trebuchet MS", "PingFang SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 1280px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.topbar h1 {
+  margin: 4px 0 0;
+  font-size: 32px;
+  letter-spacing: 0.03em;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #6d7c82;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 300px minmax(760px, 1.28fr) 280px;
+  gap: 18px;
+  align-items: start;
+}
+
+.panel,
+.center-stage {
+  min-height: 780px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel-block,
+.center-stage,
+.canvas-shell {
+  background: rgba(248, 245, 239, 0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(47, 67, 74, 0.12);
+  box-shadow: 0 18px 42px rgba(31, 41, 45, 0.09);
+}
+
+.panel-block {
+  border-radius: 24px;
+  padding: 18px;
+}
+
+.center-stage {
+  border-radius: 28px;
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.canvas-shell {
+  border-radius: 22px;
+  padding: 12px;
+  width: min(100%, 980px);
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 680px;
+  align-self: center;
+}
+
+.canvas-toolbar,
+.status-strip,
+.block-header,
+.metric,
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.canvas-toolbar,
+.status-strip,
+.block-header span,
+.helper-text,
+.fact-list,
+.history-item,
+.error-text {
+  color: #5a6870;
+  font-size: 13px;
+}
+
+.status-strip {
+  width: min(100%, 980px);
+  align-self: center;
+}
+
+.simulation-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 640px;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(214, 225, 220, 0.72), rgba(244, 239, 229, 0.96)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.panel-block h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field span {
+  font-size: 13px;
+  color: #425158;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border: 1px solid rgba(54, 74, 81, 0.16);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #0f1f25;
+}
+
+.grid-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.segmented button,
+.ghost-button,
+.drive-button {
+  border: 0;
+  border-radius: 999px;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.segmented button {
+  padding: 10px 12px;
+  background: rgba(74, 95, 102, 0.09);
+  color: #2f434c;
+}
+
+.segmented button.active {
+  background: linear-gradient(135deg, #0c6976, #12456d);
+  color: #fff;
+}
+
+.ghost-button {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #12354d;
+  box-shadow: inset 0 0 0 1px rgba(30, 53, 65, 0.08);
+}
+
+.ghost-button:hover,
+.drive-button:hover,
+.segmented button:hover {
+  transform: translateY(-1px);
+}
+
+.control-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: min(100%, 980px);
+  align-self: center;
+}
+
+.drive-button {
+  padding: 13px 14px;
+  background: linear-gradient(135deg, #104c69, #0b7c6e);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(14, 74, 88, 0.18);
+}
+
+.drive-button.secondary {
+  background: linear-gradient(135deg, #c36a23, #df9548);
+}
+
+.drive-button.tertiary {
+  background: rgba(37, 58, 67, 0.1);
+  color: #233640;
+  box-shadow: none;
+}
+
+.emphasis-block {
+  background:
+    radial-gradient(circle at top right, rgba(242, 192, 111, 0.16), transparent 38%),
+    rgba(248, 245, 239, 0.88);
+}
+
+.risk-card {
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+}
+
+.risk-card strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 22px;
+}
+
+.risk-card p {
+  margin: 4px 0;
+}
+
+.risk-card.safe {
+  background: rgba(25, 126, 85, 0.11);
+  border-color: rgba(25, 126, 85, 0.22);
+}
+
+.risk-card.warn {
+  background: rgba(222, 143, 64, 0.12);
+  border-color: rgba(222, 143, 64, 0.22);
+}
+
+.risk-card.risk {
+  background: rgba(199, 58, 46, 0.14);
+  border-color: rgba(199, 58, 46, 0.22);
+}
+
+.fact-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.metric span {
+  color: #6c7b82;
+  font-size: 12px;
+}
+
+.metric strong {
+  font-size: 18px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 280px;
+  overflow: auto;
+  margin-top: 10px;
+  padding-right: 4px;
+}
+
+.history-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.history-item.collided {
+  background: rgba(199, 58, 46, 0.1);
+}
+
+.helper-text {
+  margin: 10px 0 0;
+}
+
+.error-text {
+  margin: 12px 0 0;
+  color: #b93024;
+}
+
+@media (max-width: 1440px) {
+  body {
+    min-width: 1180px;
+  }
+
+  .workspace {
+    grid-template-columns: 290px minmax(700px, 1.18fr) 270px;
+  }
+}
