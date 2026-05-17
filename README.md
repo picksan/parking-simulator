@@ -142,6 +142,12 @@ npm test
 - 阿里云 OSS 静态网站托管
 - 腾讯云静态网站托管
 
+如果发布到 GitHub Pages 的独立项目仓库（例如 `https://github.com/<user>/<repo>`），当前项目已经内置了 GitHub Actions 发布工作流，并会在生产构建时自动使用 `/<repo>/` 作为资源基础路径，适合部署到：
+
+```text
+https://<user>.github.io/<repo>/
+```
+
 推荐流程：
 
 1. `npm run build`
